@@ -20,12 +20,10 @@ public class RentalSystem {
     private int id = 0, id2 = 0;
 
     public void createComic() {
-      
-
+     
         String[][] temp = rw.readComicFile();
 
         for (int a = 0; a < temp.length; a++) {
-            System.out.println(Arrays.toString(temp[a]));
             if (temp[a][4].equals("Comic")) {
                 setComic(new Comic(temp[a][0], temp[a][1], Integer.parseInt(temp[a][2]), Double.parseDouble(temp[a][3])));
             } else {
@@ -43,9 +41,7 @@ public class RentalSystem {
       
         String[][] temp = rw.readRenteeFile();
         for (int a = 0; a < temp.length; a++) {
-            System.out.println(Arrays.toString(temp[a]));
             String[] rentedComics = temp[a][2].split("#");
-            System.out.println(Arrays.toString(rentedComics));
             setRentee(new Rentee(temp[a][0], temp[a][1], rentedComics));
 
         }
@@ -118,23 +114,19 @@ public class RentalSystem {
     public Object[] searchRentee(String renteeID) {
 
         int counter = 0;
-        double totalFee = 0;
         Object[] results = new Object[0];
         for (Rentee rentee1 : renteeArr) {
             if (rentee1 == null) {
                 break;
             } else {
 
-                String displayMsg;
+             
                 
 //            If input ID matches the ID in any of the renteeArr
 
                 if (rentee1.getMemberId().equals(renteeID.toUpperCase())) {
                     results = new Object[3];
-                    displayMsg = "MemberID  | Name \n"
-                            + "-------------------------------------------\n"
-                            + rentee1.getMemberId() + "  " + rentee1.getMemberName() + "\n"
-                            + "Comics loaned: \n";
+                    
                     results[0] = (String) rentee1.getMemberId();
                     results[1] = (String) rentee1.getMemberName();
 
@@ -143,32 +135,6 @@ public class RentalSystem {
                         comicsLoaned[i] = rentee1.getLoanedComics()[i];
                     }
                     results[2] = comicsLoaned;
-
-                    //Display comic names
-//                for (int a = 0; a < rentee1.getLoanedComics().length; a++) {
-//                    displayMsg += (a + 1) + " " + rentee1.getLoanedComics()[a] + "\n";
-//                }
-//
-//                try {
-//                    for (int a = 0; a < comicArr.length; a++) {
-//
-//                        for (int b = 0; b < rentee1.getLoanedComics().length; b++) {
-////                        If the name of the comics loaned in the renteeArr matches the comic name in comicArr
-//
-//                            if (rentee1.getLoanedComics()[b].equals(comicArr[a].getComicName())) {
-//                                totalFee += (comicArr[a].getComicPrice() / 20.0);
-//                                break;
-//                            }
-//                        }
-//
-//                    }
-////                    Length of renteeArr is less than the length of comcicArr, it will cause an error
-//                } catch (ArrayIndexOutOfBoundsException e) {
-//                    System.out.println("end of loaned array");
-//                }
-//
-//                displayMsg += "\n\n Total Rental Per Day: $" + String.format("%.2f", totalFee);
-//                JOptionPane.showMessageDialog(null, displayMsg);
                     counter++;
 
                 }
@@ -186,23 +152,16 @@ public class RentalSystem {
     public String earningStatistic() {
         double totalRentalFees = 0;
         String text;
+        
 //        Using for in loop to iterate the array elements in renteeArr
         for (Rentee rentee1 : renteeArr) {
-
+            String [] rentedComics = rentee1.getLoanedComics();
+            System.out.println(Arrays.toString(rentedComics));
             try {
-                for (int a = 0; a < comicArr.length; a++) {
-                    if (rentee1 == null) {
-                        break;
-                    }
-
-                    for (int b = 0; b < rentee1.getLoanedComics().length; b++) {
-
-//                        If the name of the comics loaned in the renteeArr matches the comic name in comicArr
-                        if (rentee1.getLoanedComics()[b].equals(comicArr[a].getComicName())) {
-                            totalRentalFees += (comicArr[a].getComicPrice() / 20.0);
-                            break;
-                        }
-                    }
+                for (int a = 0; a < rentedComics.length; a++) {
+                    String[] comicDetails = searchComic(rentedComics[a]);
+                    System.out.println(comicDetails[2]);
+                    totalRentalFees += Double.parseDouble(comicDetails[2]);
 
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -213,7 +172,7 @@ public class RentalSystem {
         System.out.println(totalRentalFees);
         text = "Earning Per Day:\n----------------------------------------------\n\nThere are " + renteeArr.length
                 + " Rentees in total.\n\n"
-                + "Average earning per day based on number of rentees is $" + String.format("%.2f", totalRentalFees / 3) + "."
+                + "Average earning per day based on number of rentees is $" + String.format("%.2f", totalRentalFees / renteeArr.length) + "."
                 + "\n\nTotal earning per day is $" + String.format("%.2f", totalRentalFees) + ".";
         return text;
     }

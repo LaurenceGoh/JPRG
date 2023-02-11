@@ -57,7 +57,6 @@ public class RentalFrame extends javax.swing.JFrame {
         String[] defaultComicData = renteeArrayData[0].getLoanedComics();
         for (int a=0;a<defaultComicData.length;a++){
             String[] comicDetails = rentalSystem.searchComic(defaultComicData[a]);
-                    System.out.println(Arrays.toString(comicDetails));
             tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
         }
         
@@ -124,9 +123,12 @@ public class RentalFrame extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jPanel1.setToolTipText("");
+        jPanel1.setAutoscrolls(true);
 
-        systemMessage.setColumns(20);
-        systemMessage.setRows(5);
+        systemMessage.setEditable(false);
+        systemMessage.setColumns(10);
+        systemMessage.setRows(10);
+        systemMessage.setAutoscrolls(false);
         jScrollPane3.setViewportView(systemMessage);
 
         earningButton.setText("Get Earning Stats");
@@ -147,13 +149,13 @@ public class RentalFrame extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(earningButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
                         .addComponent(clearButton)))
                 .addContainerGap())
         );
@@ -161,12 +163,12 @@ public class RentalFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(earningButton)
                     .addComponent(clearButton))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -216,7 +218,7 @@ public class RentalFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(comicPreviousButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
                 .addComponent(comicNextButton)
                 .addContainerGap())
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,7 +240,7 @@ public class RentalFrame extends javax.swing.JFrame {
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(depositResult, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(0, 12, Short.MAX_VALUE))
+                                    .addGap(0, 33, Short.MAX_VALUE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(titleResult, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))))
@@ -448,30 +450,27 @@ public class RentalFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comicNum)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(comicNum)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel8))
+                            .addComponent(jLabel8)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(renteeNum, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saveButton)))))
-                .addContainerGap(26, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(saveButton))
+                            .addComponent(renteeNum, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(31, 31, 31))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(277, 277, 277)
                 .addComponent(jLabel1)
-                .addGap(237, 237, 237))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -495,8 +494,8 @@ public class RentalFrame extends javax.swing.JFrame {
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(saveButton))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -531,7 +530,6 @@ public class RentalFrame extends javax.swing.JFrame {
             DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
             tableResult.setRowCount(0);
             Object[] results = rentalSystem.searchRentee(userInput);
-            System.out.println(Arrays.deepToString(results));
             if (results.length == 0) {
                 systemMessage.setText("Cannot find member ID \"" + userInput + "\" in the data!");
             } else {
@@ -541,7 +539,6 @@ public class RentalFrame extends javax.swing.JFrame {
                 String[] comicArray = (String[]) results[2];
                 for (int a = 0; a < comicArray.length; a++) {
                     String[] comicDetails = rentalSystem.searchComic(comicArray[a]);
-                    System.out.println(Arrays.toString(comicDetails));
                     tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
                 }
             }
@@ -553,10 +550,10 @@ public class RentalFrame extends javax.swing.JFrame {
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
         try {
-//            ObjectOutputStream renteeOS = new ObjectOutputStream(new FileOutputStream("rentees.dat"));
-//            ObjectOutputStream comicOS = new ObjectOutputStream(new FileOutputStream("comics.dat"));
 
-            JOptionPane.showMessageDialog(null, "Saving data");
+            rw.writeRenteeFile(rentalSystem.getRenteeArr());
+
+            JOptionPane.showMessageDialog(null, "Saving data...");
             JOptionPane.showMessageDialog(null, "Thank you for using Comic Rental.\nWe look foward to serve you in the future.");
             System.exit(0);
         } catch (Exception e) {
@@ -628,8 +625,7 @@ public class RentalFrame extends javax.swing.JFrame {
             additionalResult.setText("This is a Comic in English.");
         }
         comicNum.setText("Comic " + (comicIndex + 1) + " of " + comicData.length);
-        System.out.println(comicIndex);
-        System.out.println(comicData[comicIndex].getComicName());
+        
 
     }//GEN-LAST:event_comicPreviousButtonActionPerformed
 
@@ -651,7 +647,6 @@ public class RentalFrame extends javax.swing.JFrame {
         DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
         tableResult.setRowCount(0);
         String[] renteeComics = renteeData[renteeIndex].getLoanedComics();
-        System.out.println(Arrays.toString(renteeComics));
         for (int a=0;a<renteeComics.length;a++){
             String [] comicDetails = rentalSystem.searchComic(renteeComics[a]);
             tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
@@ -670,7 +665,6 @@ public class RentalFrame extends javax.swing.JFrame {
         if (renteeIndex == -1){
             renteeIndex = renteeData.length-1;
         }
-        System.out.println(renteeIndex);
         memberResult.setText(renteeData[renteeIndex].getMemberId());
         nameResult.setText(renteeData[renteeIndex].getMemberName());
         
@@ -678,7 +672,6 @@ public class RentalFrame extends javax.swing.JFrame {
         DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
         tableResult.setRowCount(0);
         String[] renteeComics = renteeData[renteeIndex].getLoanedComics();
-        System.out.println(Arrays.toString(renteeComics));
         for (int a=0;a<renteeComics.length;a++){
             String [] comicDetails = rentalSystem.searchComic(renteeComics[a]);
             tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});

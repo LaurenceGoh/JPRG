@@ -30,10 +30,8 @@ public class ReadWriteFile implements Serializable {
 
             while ((rentee = br.readLine()) != null) {
                 temp = rentee.split(";");
-                System.out.println(temp[0] + " " + temp[1] + " " + temp[2]);
                 renteeArr[index] = temp;
                 index++;
-                System.out.println(index);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -42,12 +40,15 @@ public class ReadWriteFile implements Serializable {
         return renteeArr;
     }
 
-    public void writeRenteeFile() {
+    public void writeRenteeFile(Rentee[] renteeArr) {
         try {
             ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream("rentee.dat"));
-            outStream.writeObject(this);
+            for (int a=0;a<renteeArr.length;a++){
+                outStream.writeObject(renteeArr[a]);
+            }
             outStream.close();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(null, "Error in writing rentee file.");
         }
     }
@@ -75,7 +76,7 @@ public class ReadWriteFile implements Serializable {
             PrintWriter pw = new PrintWriter(new FileWriter("comic.txt"));
 
         } catch (Exception e) {
-
+            JOptionPane.showMessageDialog(null,"Error in writing Comic file.");
         }
     }
 }

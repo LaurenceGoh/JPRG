@@ -52,11 +52,11 @@ public class RentalMenu {
             if (input == 1) {
                 comics.displayComics();
             } else if (input == 2) {
-                comics.searchComic();
+//                comics.searchComic();
             } else if (input == 3) {
-                comics.searchRentee();
+//                comics.searchRentee();
             } else if (input == 4) {
-                comics.earningStatistic();
+//                comics.earningStatistic();
             } else if (input == 5) {
                 JOptionPane.showMessageDialog(null, "Thank you for using Comic Rental.\nWe hope to serve you in the near future.");
             }

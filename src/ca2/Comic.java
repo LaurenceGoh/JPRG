@@ -61,5 +61,7 @@ public class Comic {
         this.comicPrice = comicPrice;
     }
 
-   
+   public String getLanguage() {
+       return "";
+   }
 }

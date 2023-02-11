@@ -10,5 +10,19 @@ package ca2;
  */
 public class Manga extends Comic{
     
+    private String language;
+    
+    public Manga(String num, String name, int pages, double price, String language){
+        super(num,name,pages,price);
+        this.language = language;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
     
 }

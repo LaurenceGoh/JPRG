@@ -3,13 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package ca2;
-
+import java.io.*;
 /*
     Name :Laurence Goh Ming Shen
     Class : DIT/FT/1B/03
     Admin no: 2220327
 */
-public class Rentee {
+public class Rentee implements Serializable {
 
     private String memberId = null;
     private String memberName = null;

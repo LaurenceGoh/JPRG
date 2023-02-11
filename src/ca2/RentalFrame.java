@@ -4,18 +4,64 @@
  */
 package ca2;
 
+import java.io.*;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
     Name :Laurence Goh Ming Shen
     Class : DIT/FT/1B/03
     Admin no: 2220327
-*/
+ */
 public class RentalFrame extends javax.swing.JFrame {
+
+    private RentalSystem rentalSystem;
+    private ReadWriteFile rw;
+    private int comicIndex = 0;
+    private int renteeIndex = 0;
 
     /**
      * Creates new form RentalFrame
      */
     public RentalFrame() {
         initComponents();
+        rentalSystem = new RentalSystem();
+        rentalSystem.createComic();
+        rentalSystem.createRentee();
+
+        rw = new ReadWriteFile();
+
+        Comic[] comicArrayData = rentalSystem.getComicArr();
+        Rentee[] renteeArrayData = rentalSystem.getRenteeArr();
+
+        // display first comic on run
+        comicNum.setText("Comic" + (comicIndex + 1) + " of " + comicArrayData.length);
+        isbnResult.setText(comicArrayData[0].getComicNum());
+        titleResult.setText(comicArrayData[0].getComicName());
+        rentalResult.setText(String.format("%.2f", comicArrayData[0].getComicPrice() / 20));
+        depositResult.setText(String.format("%.2f", comicArrayData[0].getComicPrice() * 1.1));
+        if (comicArrayData[0] instanceof Manga) {
+            if (comicArrayData[0].getLanguage().equals("EN")) {
+                additionalResult.setText("This is a manga traslated to English.");
+            } else {
+                additionalResult.setText("This is a manga in Japansese.");
+            }
+        } else {
+            additionalResult.setText("This is a Comic in English.");
+        }
+        
+        memberResult.setText(renteeArrayData[0].getMemberId());
+        nameResult.setText(renteeArrayData[0].getMemberName());
+        DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
+        String[] defaultComicData = renteeArrayData[0].getLoanedComics();
+        for (int a=0;a<defaultComicData.length;a++){
+            String[] comicDetails = rentalSystem.searchComic(defaultComicData[a]);
+                    System.out.println(Arrays.toString(comicDetails));
+            tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
+        }
+        
+        renteeNum.setText("Rentee " + (renteeIndex+1) + " of " + renteeArrayData.length);
     }
 
     /**
@@ -31,109 +77,135 @@ public class RentalFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        systemMessage = new javax.swing.JTextArea();
+        earningButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        comicNextButton = new javax.swing.JButton();
+        comicPreviousButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        additionalResult = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        rentalResult = new javax.swing.JTextField();
+        depositResult = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
+        titleResult = new javax.swing.JTextField();
+        isbnResult = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        memberResult = new javax.swing.JTextField();
+        nameResult = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        loanTable = new javax.swing.JTable();
+        renteePreviousButton = new javax.swing.JButton();
+        renteeNextButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jTextField7 = new javax.swing.JTextField();
+        isbnCheckbox = new javax.swing.JRadioButton();
+        memberCheckbox = new javax.swing.JRadioButton();
+        searchInput = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
+        searchButton = new javax.swing.JButton();
+        comicNum = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
+        renteeNum = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jButton8 = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 102, 255));
         jLabel1.setText("Comic Rental System");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jPanel1.setToolTipText("");
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jScrollPane3.setViewportView(jTextArea3);
+        systemMessage.setColumns(20);
+        systemMessage.setRows(5);
+        jScrollPane3.setViewportView(systemMessage);
 
-        jButton5.setText("Get Earning Stats");
+        earningButton.setText("Get Earning Stats");
+        earningButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                earningButtonActionPerformed(evt);
+            }
+        });
 
-        jButton6.setText("Clear Message");
+        clearButton.setText("Clear Message");
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jButton5)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton6))
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(47, Short.MAX_VALUE)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(earningButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(clearButton)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton5)
-                        .addComponent(jButton6))
-                    .addContainerGap(141, Short.MAX_VALUE)))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(earningButton)
+                    .addComponent(clearButton))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jButton2.setText("Next");
+        comicNextButton.setText("Next");
+        comicNextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comicNextButtonActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("Previous");
+        comicPreviousButton.setText("Previous");
+        comicPreviousButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comicPreviousButtonActionPerformed(evt);
+            }
+        });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        additionalResult.setEditable(false);
+        additionalResult.setColumns(20);
+        additionalResult.setRows(5);
+        additionalResult.setAutoscrolls(false);
+        jScrollPane1.setViewportView(additionalResult);
 
         jLabel6.setText("Additional Information :");
+
+        rentalResult.setEditable(false);
+
+        depositResult.setEditable(false);
 
         jLabel5.setText("Deposit: ");
 
         jLabel4.setText("Daily Rental Cost :");
 
         jLabel3.setText("TItle: ");
+
+        titleResult.setEditable(false);
+
+        isbnResult.setEditable(false);
 
         jLabel2.setText("ISBN-13:");
 
@@ -142,8 +214,10 @@ public class RentalFrame extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(251, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addContainerGap()
+                .addComponent(comicPreviousButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(comicNextButton)
                 .addContainerGap())
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -158,20 +232,19 @@ public class RentalFrame extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGap(6, 6, 6)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
+                                    .addComponent(isbnResult, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGap(79, 79, 79)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(depositResult, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(0, 12, Short.MAX_VALUE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))))
+                                    .addComponent(titleResult, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton1)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(rentalResult, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(0, 187, Short.MAX_VALUE)))
                     .addContainerGap()))
@@ -180,33 +253,33 @@ public class RentalFrame extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(40, 40, 40))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comicNextButton)
+                    .addComponent(comicPreviousButton))
+                .addGap(26, 26, 26))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(isbnResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGap(20, 20, 20)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(titleResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGap(18, 18, 18)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
                         .addComponent(jLabel5))
                     .addGap(11, 11, 11)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(rentalResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(depositResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGap(18, 18, 18)
                     .addComponent(jLabel6)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(16, 16, 16)
-                    .addComponent(jButton1)
-                    .addContainerGap(18, Short.MAX_VALUE)))
+                    .addContainerGap(83, Short.MAX_VALUE)))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -215,24 +288,43 @@ public class RentalFrame extends javax.swing.JFrame {
 
         jLabel11.setText("Name :");
 
+        memberResult.setEditable(false);
+
+        nameResult.setEditable(false);
+
         jLabel12.setText("List of loans :");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        loanTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ISBN-13", "Title", "Rental Per Day", "Deposit Fee"
             }
-        ));
-        jScrollPane2.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
-        jButton3.setText("Previous");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(loanTable);
 
-        jButton4.setText("Next");
+        renteePreviousButton.setText("Previous");
+        renteePreviousButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                renteePreviousButtonActionPerformed(evt);
+            }
+        });
+
+        renteeNextButton.setText("Next");
+        renteeNextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                renteeNextButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -250,14 +342,14 @@ public class RentalFrame extends javax.swing.JFrame {
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(39, 39, 39)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                                    .addComponent(jTextField6)))
+                                    .addComponent(memberResult, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                                    .addComponent(nameResult)))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
-                        .addComponent(jButton3)
+                        .addComponent(renteePreviousButton)
                         .addGap(206, 206, 206)
-                        .addComponent(jButton4)))
+                        .addComponent(renteeNextButton)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -266,36 +358,36 @@ public class RentalFrame extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(memberResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nameResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addGap(22, 22, 22))
+                    .addComponent(renteePreviousButton)
+                    .addComponent(renteeNextButton))
+                .addGap(27, 27, 27))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setText("Comic by ISBN-13");
+        buttonGroup1.add(isbnCheckbox);
+        isbnCheckbox.setText("Comic by ISBN-13");
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Rentee by Member D");
+        buttonGroup1.add(memberCheckbox);
+        memberCheckbox.setText("Rentee by Member ID");
 
         jLabel14.setText("Search :");
 
-        jButton7.setText("Search");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                searchButtonActionPerformed(evt);
             }
         });
 
@@ -306,16 +398,16 @@ public class RentalFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton7)
+                    .addComponent(searchButton)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(jRadioButton1)
+                            .addComponent(isbnCheckbox)
                             .addGap(52, 52, 52)
-                            .addComponent(jRadioButton2))
+                            .addComponent(memberCheckbox))
                         .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(searchInput, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -323,60 +415,63 @@ public class RentalFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(isbnCheckbox)
+                    .addComponent(memberCheckbox))
                 .addGap(46, 46, 46)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addComponent(jButton7)
+                .addComponent(searchButton)
                 .addGap(31, 31, 31))
         );
 
-        jLabel7.setText("Comic 1 of 6");
+        comicNum.setText("Comic 1 of 6");
 
         jLabel8.setText("System Message");
 
-        jLabel9.setText("Rentee 2 of 4");
+        renteeNum.setText("Rentee 2 of 4");
 
         jLabel13.setText("Search");
 
-        jButton8.setText("Save and Exit");
+        saveButton.setText("Save and Exit");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comicNum)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(270, 270, 270)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel8))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addGap(210, 210, 210)
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(278, 278, 278)
-                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(24, 24, 24)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jButton8)
-                                        .addGap(21, 21, 21)))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(renteeNum, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saveButton)))))
+                .addContainerGap(26, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(237, 237, 237))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -384,8 +479,8 @@ public class RentalFrame extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel9))
+                    .addComponent(comicNum)
+                    .addComponent(renteeNum))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -395,21 +490,203 @@ public class RentalFrame extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton8))
+                        .addGap(18, 18, 18)
+                        .addComponent(saveButton))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+
+        String userInput = searchInput.getText();
+
+        if (isbnCheckbox.isSelected()) {
+            String[] results = rentalSystem.searchComic(userInput);
+            if (results.length == 0) {
+                systemMessage.setText("No such ISBN-13 \"" + userInput + "\" in the data!");
+            } else {
+                isbnResult.setText(results[0]);
+                titleResult.setText(results[1]);
+                rentalResult.setText(results[2]);
+                depositResult.setText(results[3]);
+                systemMessage.setText("Found and displayed item with the ISBN-13:" + userInput);
+                if (results.length == 5) {
+                    if (results[4].equals("JP")) {
+                        additionalResult.setText("This is a manga in Japanese.");
+                    } else {
+                        additionalResult.setText("This is a manga translated to English.");
+                    }
+                } else {
+                    additionalResult.setText("This is a comic in english");
+                }
+            }
+        } else if (memberCheckbox.isSelected()) {
+            DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
+            tableResult.setRowCount(0);
+            Object[] results = rentalSystem.searchRentee(userInput);
+            System.out.println(Arrays.deepToString(results));
+            if (results.length == 0) {
+                systemMessage.setText("Cannot find member ID \"" + userInput + "\" in the data!");
+            } else {
+                systemMessage.setText("Found and displayed rentee with the member ID : " + userInput);
+                memberResult.setText((String) results[0]);
+                nameResult.setText((String) results[1]);
+                String[] comicArray = (String[]) results[2];
+                for (int a = 0; a < comicArray.length; a++) {
+                    String[] comicDetails = rentalSystem.searchComic(comicArray[a]);
+                    System.out.println(Arrays.toString(comicDetails));
+                    tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
+                }
+            }
+
+        }
+
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        // TODO add your handling code here:
+        try {
+//            ObjectOutputStream renteeOS = new ObjectOutputStream(new FileOutputStream("rentees.dat"));
+//            ObjectOutputStream comicOS = new ObjectOutputStream(new FileOutputStream("comics.dat"));
+
+            JOptionPane.showMessageDialog(null, "Saving data");
+            JOptionPane.showMessageDialog(null, "Thank you for using Comic Rental.\nWe look foward to serve you in the future.");
+            System.exit(0);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error in saving file.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void comicNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comicNextButtonActionPerformed
+        // TODO add your handling code here:
+
+        Comic[] comicData = rentalSystem.getComicArr();
+        
+        comicIndex++;
+        if (comicIndex == comicData.length) {
+            comicIndex = 0;
+        }
+        isbnResult.setText(comicData[comicIndex].getComicNum());
+        titleResult.setText(comicData[comicIndex].getComicName());
+        rentalResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() / 20));
+        depositResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() * 1.1));
+
+        if (comicData[comicIndex] instanceof Manga) {
+            if (comicData[comicIndex].getLanguage().equals("EN")) {
+                additionalResult.setText("This is a Manga translated to English");
+            } else {
+                additionalResult.setText("This is a Manga in Japanese.");
+            }
+        } else {
+            additionalResult.setText("This is a Comic in English.");
+        }
+        
+        comicNum.setText("Comic " + (comicIndex + 1) + " of " + comicData.length);
+
+        
+    }//GEN-LAST:event_comicNextButtonActionPerformed
+
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+        // TODO add your handling code here:
+        systemMessage.setText("");
+    }//GEN-LAST:event_clearButtonActionPerformed
+
+    private void earningButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_earningButtonActionPerformed
+        // TODO add your handling code here:
+        systemMessage.setText(rentalSystem.earningStatistic());
+    }//GEN-LAST:event_earningButtonActionPerformed
+
+    private void comicPreviousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comicPreviousButtonActionPerformed
+        // TODO add your handling code here:
+        comicIndex--;
+        
+        Comic[] comicData = rentalSystem.getComicArr();
+        
+        if (comicIndex == -1) {
+            comicIndex = comicData.length - 1;
+        }
+        isbnResult.setText(comicData[comicIndex].getComicNum());
+        titleResult.setText(comicData[comicIndex].getComicName());
+        rentalResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() / 20));
+        depositResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() * 1.1));
+
+        if (comicData[comicIndex] instanceof Manga) {
+            if (comicData[comicIndex].getLanguage().equals("EN")) {
+                additionalResult.setText("This is a Manga translated to English");
+            } else {
+                additionalResult.setText("This is a Manga in Japanese.");
+            }
+        } else {
+            additionalResult.setText("This is a Comic in English.");
+        }
+        comicNum.setText("Comic " + (comicIndex + 1) + " of " + comicData.length);
+        System.out.println(comicIndex);
+        System.out.println(comicData[comicIndex].getComicName());
+
+    }//GEN-LAST:event_comicPreviousButtonActionPerformed
+
+    private void renteeNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renteeNextButtonActionPerformed
+        // TODO add your handling code here:
+
+        Rentee[] renteeData = rentalSystem.getRenteeArr();
+        
+        renteeIndex++;
+        if (renteeIndex == renteeData.length){
+            renteeIndex = 0;
+        }
+        System.out.println(renteeIndex);
+        
+        memberResult.setText(renteeData[renteeIndex].getMemberId());
+        nameResult.setText(renteeData[renteeIndex].getMemberName());
+        
+        //Table results
+        DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
+        tableResult.setRowCount(0);
+        String[] renteeComics = renteeData[renteeIndex].getLoanedComics();
+        System.out.println(Arrays.toString(renteeComics));
+        for (int a=0;a<renteeComics.length;a++){
+            String [] comicDetails = rentalSystem.searchComic(renteeComics[a]);
+            tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
+        }
+        
+        renteeNum.setText("Rentee " + (renteeIndex+1) + " of " + renteeData.length);
+        
+    }//GEN-LAST:event_renteeNextButtonActionPerformed
+
+    private void renteePreviousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renteePreviousButtonActionPerformed
+        // TODO add your handling code here:
+
+        Rentee[] renteeData = rentalSystem.getRenteeArr();
+        
+        renteeIndex--;
+        if (renteeIndex == -1){
+            renteeIndex = renteeData.length-1;
+        }
+        System.out.println(renteeIndex);
+        memberResult.setText(renteeData[renteeIndex].getMemberId());
+        nameResult.setText(renteeData[renteeIndex].getMemberName());
+        
+        //Table results
+        DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
+        tableResult.setRowCount(0);
+        String[] renteeComics = renteeData[renteeIndex].getLoanedComics();
+        System.out.println(Arrays.toString(renteeComics));
+        for (int a=0;a<renteeComics.length;a++){
+            String [] comicDetails = rentalSystem.searchComic(renteeComics[a]);
+            tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
+        }
+        
+        renteeNum.setText("Rentee " + (renteeIndex+1) + " of " + renteeData.length);
+        
+    }//GEN-LAST:event_renteePreviousButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -447,15 +724,16 @@ public class RentalFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea additionalResult;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
+    private javax.swing.JButton clearButton;
+    private javax.swing.JButton comicNextButton;
+    private javax.swing.JLabel comicNum;
+    private javax.swing.JButton comicPreviousButton;
+    private javax.swing.JTextField depositResult;
+    private javax.swing.JButton earningButton;
+    private javax.swing.JRadioButton isbnCheckbox;
+    private javax.swing.JTextField isbnResult;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -467,27 +745,26 @@ public class RentalFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTable loanTable;
+    private javax.swing.JRadioButton memberCheckbox;
+    private javax.swing.JTextField memberResult;
+    private javax.swing.JTextField nameResult;
+    private javax.swing.JTextField rentalResult;
+    private javax.swing.JButton renteeNextButton;
+    private javax.swing.JLabel renteeNum;
+    private javax.swing.JButton renteePreviousButton;
+    private javax.swing.JButton saveButton;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JTextField searchInput;
+    private javax.swing.JTextArea systemMessage;
+    private javax.swing.JTextField titleResult;
     // End of variables declaration//GEN-END:variables
 }

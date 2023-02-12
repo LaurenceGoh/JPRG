@@ -570,12 +570,13 @@ public class RentalFrame extends javax.swing.JFrame {
                 }
             }
         } else if (memberCheckbox.isSelected()) {
-            DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
-            tableResult.setRowCount(0);
+            
             Object[] results = rentalSystem.searchRentee(userInput);
             if (results.length == 0) {
                 systemMessage.setText("Cannot find member ID \"" + userInput + "\" in the data!");
             } else {
+                DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
+                tableResult.setRowCount(0);
                 systemMessage.setText("Found and displayed rentee with the member ID : " + userInput);
                 memberResult.setText((String) results[0]);
                 nameResult.setText((String) results[1]);

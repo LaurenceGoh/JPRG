@@ -71,12 +71,5 @@ public class ReadWriteFile implements Serializable {
         return comicArr;
     }
 
-    public void writeComicFile() {
-        try {
-            PrintWriter pw = new PrintWriter(new FileWriter("comic.txt"));
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,"Error in writing Comic file.");
-        }
-    }
+  
 }

@@ -80,52 +80,51 @@ public class RentalSystem {
     public String[] searchComic(String searchComic) {
         String[] results = new String[0];
 //        String searchComic = JOptionPane.showInputDialog(null, "Enter ISBN-13 to search: ");
-        boolean found = false;
+        int index = 0;
         for (int a = 0; a < comicArr.length; a++) {
             if (comicArr[a].getComicNum().equals(searchComic)) {
 
-                found = true;
  
                 if (comicArr[a] instanceof Manga) {
-                    results = new String[5];
+                    results = new String[6];
                     results[0] = searchComic;
                     results[1] = comicArr[a].getComicName();
                     results[2] = String.format("%.2f", comicArr[a].getComicPrice() / 20.0);
                     results[3] = String.format("%.2f", comicArr[a].getComicPrice() * 1.1);
                     results[4] = comicArr[a].getLanguage();
+                    results[5] = Integer.toString(index);
                     break;
                 } else {
-                    results = new String[4];
+                    results = new String[5];
                     results[0] = searchComic;
                     results[1] = comicArr[a].getComicName();
                     results[2] = String.format("%.2f", comicArr[a].getComicPrice() / 20.0);
                     results[3] = String.format("%.2f", comicArr[a].getComicPrice() * 1.1);
+                    results[4] = Integer.toString(index);
                     break;
                 }
             }
+            else {
+                index++;
+            }
         }
-        if (found == false) {
-            JOptionPane.showMessageDialog(null, "Cannot find the comic \"" + searchComic + "\"!!", "Info", JOptionPane.ERROR_MESSAGE);
-        }
+        
         return results;
     }
 
 //    Finding member details based on id (input 3)
     public Object[] searchRentee(String renteeID) {
 
-        int counter = 0;
+        int index = 0;
         Object[] results = new Object[0];
         for (Rentee rentee1 : renteeArr) {
             if (rentee1 == null) {
                 break;
             } else {
-
-             
-                
 //            If input ID matches the ID in any of the renteeArr
 
                 if (rentee1.getMemberId().equals(renteeID.toUpperCase())) {
-                    results = new Object[3];
+                    results = new Object[4];
                     
                     results[0] = (String) rentee1.getMemberId();
                     results[1] = (String) rentee1.getMemberName();
@@ -135,16 +134,15 @@ public class RentalSystem {
                         comicsLoaned[i] = rentee1.getLoanedComics()[i];
                     }
                     results[2] = comicsLoaned;
-                    counter++;
+                    results[3]= index;
 
+                } else {
+                    index++;
                 }
+                
             }
-
         }
-        if (counter == 0) {
-            JOptionPane.showMessageDialog(null, "Cannot find the Member \"" + renteeID + "\"!!", "Info", JOptionPane.ERROR_MESSAGE);
-        }
-
+       
         return results;
     }
 
@@ -156,20 +154,16 @@ public class RentalSystem {
 //        Using for in loop to iterate the array elements in renteeArr
         for (Rentee rentee1 : renteeArr) {
             String [] rentedComics = rentee1.getLoanedComics();
-            System.out.println(Arrays.toString(rentedComics));
             try {
                 for (int a = 0; a < rentedComics.length; a++) {
                     String[] comicDetails = searchComic(rentedComics[a]);
-                    System.out.println(comicDetails[2]);
                     totalRentalFees += Double.parseDouble(comicDetails[2]);
-
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.out.println("end of loaned array");
             }
 
         }
-        System.out.println(totalRentalFees);
         text = "Earning Per Day:\n----------------------------------------------\n\nThere are " + renteeArr.length
                 + " Rentees in total.\n\n"
                 + "Average earning per day based on number of rentees is $" + String.format("%.2f", totalRentalFees / renteeArr.length) + "."

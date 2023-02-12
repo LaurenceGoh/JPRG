@@ -20,7 +20,9 @@ public class RentalFrame extends javax.swing.JFrame {
     private ReadWriteFile rw;
     private int comicIndex = 0;
     private int renteeIndex = 0;
-
+    private Rentee[] renteeArrayData = rentalSystem.getRenteeArr();
+    private Comic[] comicArrayData = rentalSystem.getComicArr();
+    
     /**
      * Creates new form RentalFrame
      */
@@ -32,35 +34,47 @@ public class RentalFrame extends javax.swing.JFrame {
 
         rw = new ReadWriteFile();
 
-        Comic[] comicArrayData = rentalSystem.getComicArr();
-        Rentee[] renteeArrayData = rentalSystem.getRenteeArr();
 
         // display first comic on run
         comicNum.setText("Comic" + (comicIndex + 1) + " of " + comicArrayData.length);
-        isbnResult.setText(comicArrayData[0].getComicNum());
-        titleResult.setText(comicArrayData[0].getComicName());
-        rentalResult.setText(String.format("%.2f", comicArrayData[0].getComicPrice() / 20));
-        depositResult.setText(String.format("%.2f", comicArrayData[0].getComicPrice() * 1.1));
-        if (comicArrayData[0] instanceof Manga) {
-            if (comicArrayData[0].getLanguage().equals("EN")) {
-                additionalResult.setText("This is a manga traslated to English.");
+        
+        displayComic(comicArrayData,0);
+
+        renteeNum.setText("Rentee " + (renteeIndex + 1) + " of " + renteeArrayData.length);
+        
+        displayRentee(renteeArrayData,0);
+    }
+
+    private void displayRentee(Rentee[] renteeData, int renteeIndex) {
+
+        memberResult.setText(renteeData[renteeIndex].getMemberId());
+        nameResult.setText(renteeData[renteeIndex].getMemberName());
+
+        //Table results
+        DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
+        tableResult.setRowCount(0);
+        String[] renteeComics = renteeData[renteeIndex].getLoanedComics();
+        for (int a = 0; a < renteeComics.length; a++) {
+            String[] comicDetails = rentalSystem.searchComic(renteeComics[a]);
+            tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
+        }
+    }
+
+    private void displayComic(Comic[] comicData, int comicIndex) {
+        isbnResult.setText(comicData[comicIndex].getComicNum());
+        titleResult.setText(comicData[comicIndex].getComicName());
+        rentalResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() / 20));
+        depositResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() * 1.1));
+
+        if (comicData[comicIndex] instanceof Manga) {
+            if (comicData[comicIndex].getLanguage().equals("EN")) {
+                additionalResult.setText("This is a Manga translated to English.");
             } else {
-                additionalResult.setText("This is a manga in Japansese.");
+                additionalResult.setText("This is a Manga in Japanese.");
             }
         } else {
             additionalResult.setText("This is a Comic in English.");
         }
-        
-        memberResult.setText(renteeArrayData[0].getMemberId());
-        nameResult.setText(renteeArrayData[0].getMemberName());
-        DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
-        String[] defaultComicData = renteeArrayData[0].getLoanedComics();
-        for (int a=0;a<defaultComicData.length;a++){
-            String[] comicDetails = rentalSystem.searchComic(defaultComicData[a]);
-            tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
-        }
-        
-        renteeNum.setText("Rentee " + (renteeIndex+1) + " of " + renteeArrayData.length);
     }
 
     /**
@@ -131,6 +145,9 @@ public class RentalFrame extends javax.swing.JFrame {
         systemMessage.setAutoscrolls(false);
         jScrollPane3.setViewportView(systemMessage);
 
+        earningButton.setBackground(new java.awt.Color(0, 0, 255));
+        earningButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        earningButton.setForeground(new java.awt.Color(255, 255, 255));
         earningButton.setText("Get Earning Stats");
         earningButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -138,6 +155,9 @@ public class RentalFrame extends javax.swing.JFrame {
             }
         });
 
+        clearButton.setBackground(new java.awt.Color(0, 0, 255));
+        clearButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        clearButton.setForeground(new java.awt.Color(255, 255, 255));
         clearButton.setText("Clear Message");
         clearButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -163,12 +183,12 @@ public class RentalFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(earningButton)
-                    .addComponent(clearButton))
-                .addGap(26, 26, 26))
+                    .addComponent(earningButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -386,6 +406,9 @@ public class RentalFrame extends javax.swing.JFrame {
 
         jLabel14.setText("Search :");
 
+        searchButton.setBackground(new java.awt.Color(51, 255, 0));
+        searchButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        searchButton.setForeground(new java.awt.Color(255, 255, 255));
         searchButton.setText("Search");
         searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -400,7 +423,7 @@ public class RentalFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(searchButton)
+                    .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                             .addComponent(isbnCheckbox)
@@ -423,9 +446,9 @@ public class RentalFrame extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addComponent(searchButton)
-                .addGap(31, 31, 31))
+                .addGap(27, 27, 27)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         comicNum.setText("Comic 1 of 6");
@@ -436,6 +459,8 @@ public class RentalFrame extends javax.swing.JFrame {
 
         jLabel13.setText("Search");
 
+        saveButton.setBackground(new java.awt.Color(255, 0, 51));
+        saveButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         saveButton.setText("Save and Exit");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -453,30 +478,34 @@ public class RentalFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(comicNum)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(saveButton))
-                            .addComponent(renteeNum, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(renteeNum, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING))))
                         .addGap(31, 31, 31))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(277, 277, 277)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(263, 263, 263))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comicNum)
                     .addComponent(renteeNum))
@@ -491,11 +520,13 @@ public class RentalFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(saveButton))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(31, 31, 31))))
         );
 
         pack();
@@ -515,15 +546,19 @@ public class RentalFrame extends javax.swing.JFrame {
                 titleResult.setText(results[1]);
                 rentalResult.setText(results[2]);
                 depositResult.setText(results[3]);
-                systemMessage.setText("Found and displayed item with the ISBN-13:" + userInput);
-                if (results.length == 5) {
+                systemMessage.setText("Found and displayed item with the ISBN-13 : " + userInput);
+                if (results.length == 6) {
                     if (results[4].equals("JP")) {
                         additionalResult.setText("This is a manga in Japanese.");
                     } else {
                         additionalResult.setText("This is a manga translated to English.");
                     }
+                    comicIndex = Integer.parseInt(results[5]);
+                    comicNum.setText("Comic " + (comicIndex+1) + " of " + comicArrayData.length);
                 } else {
                     additionalResult.setText("This is a comic in english");
+                    comicIndex = Integer.parseInt(results[4]);
+                    comicNum.setText("Comic " + (comicIndex+1) + " of " + comicArrayData.length);
                 }
             }
         } else if (memberCheckbox.isSelected()) {
@@ -541,6 +576,9 @@ public class RentalFrame extends javax.swing.JFrame {
                     String[] comicDetails = rentalSystem.searchComic(comicArray[a]);
                     tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
                 }
+                renteeIndex = (int) results[3];
+                renteeNum.setText("Rentee " + (renteeIndex+1)  + " of " + renteeArrayData.length );
+                
             }
 
         }
@@ -566,29 +604,16 @@ public class RentalFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         Comic[] comicData = rentalSystem.getComicArr();
-        
+
         comicIndex++;
         if (comicIndex == comicData.length) {
             comicIndex = 0;
         }
-        isbnResult.setText(comicData[comicIndex].getComicNum());
-        titleResult.setText(comicData[comicIndex].getComicName());
-        rentalResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() / 20));
-        depositResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() * 1.1));
+        displayComic(comicData, comicIndex);
 
-        if (comicData[comicIndex] instanceof Manga) {
-            if (comicData[comicIndex].getLanguage().equals("EN")) {
-                additionalResult.setText("This is a Manga translated to English");
-            } else {
-                additionalResult.setText("This is a Manga in Japanese.");
-            }
-        } else {
-            additionalResult.setText("This is a Comic in English.");
-        }
-        
         comicNum.setText("Comic " + (comicIndex + 1) + " of " + comicData.length);
 
-        
+
     }//GEN-LAST:event_comicNextButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
@@ -604,28 +629,15 @@ public class RentalFrame extends javax.swing.JFrame {
     private void comicPreviousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comicPreviousButtonActionPerformed
         // TODO add your handling code here:
         comicIndex--;
-        
+
         Comic[] comicData = rentalSystem.getComicArr();
-        
+
         if (comicIndex == -1) {
             comicIndex = comicData.length - 1;
         }
-        isbnResult.setText(comicData[comicIndex].getComicNum());
-        titleResult.setText(comicData[comicIndex].getComicName());
-        rentalResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() / 20));
-        depositResult.setText(String.format("%.2f", comicData[comicIndex].getComicPrice() * 1.1));
-
-        if (comicData[comicIndex] instanceof Manga) {
-            if (comicData[comicIndex].getLanguage().equals("EN")) {
-                additionalResult.setText("This is a Manga translated to English");
-            } else {
-                additionalResult.setText("This is a Manga in Japanese.");
-            }
-        } else {
-            additionalResult.setText("This is a Comic in English.");
-        }
+        displayComic(comicData, comicIndex);
         comicNum.setText("Comic " + (comicIndex + 1) + " of " + comicData.length);
-        
+
 
     }//GEN-LAST:event_comicPreviousButtonActionPerformed
 
@@ -633,52 +645,31 @@ public class RentalFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         Rentee[] renteeData = rentalSystem.getRenteeArr();
-        
+
         renteeIndex++;
-        if (renteeIndex == renteeData.length){
+        if (renteeIndex == renteeData.length) {
             renteeIndex = 0;
         }
-        System.out.println(renteeIndex);
-        
-        memberResult.setText(renteeData[renteeIndex].getMemberId());
-        nameResult.setText(renteeData[renteeIndex].getMemberName());
-        
-        //Table results
-        DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
-        tableResult.setRowCount(0);
-        String[] renteeComics = renteeData[renteeIndex].getLoanedComics();
-        for (int a=0;a<renteeComics.length;a++){
-            String [] comicDetails = rentalSystem.searchComic(renteeComics[a]);
-            tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
-        }
-        
-        renteeNum.setText("Rentee " + (renteeIndex+1) + " of " + renteeData.length);
-        
+
+        displayRentee(renteeData, renteeIndex);
+
+        renteeNum.setText("Rentee " + (renteeIndex + 1) + " of " + renteeData.length);
+
     }//GEN-LAST:event_renteeNextButtonActionPerformed
 
     private void renteePreviousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renteePreviousButtonActionPerformed
         // TODO add your handling code here:
 
         Rentee[] renteeData = rentalSystem.getRenteeArr();
-        
+
         renteeIndex--;
-        if (renteeIndex == -1){
-            renteeIndex = renteeData.length-1;
+        if (renteeIndex == -1) {
+            renteeIndex = renteeData.length - 1;
         }
-        memberResult.setText(renteeData[renteeIndex].getMemberId());
-        nameResult.setText(renteeData[renteeIndex].getMemberName());
-        
-        //Table results
-        DefaultTableModel tableResult = (DefaultTableModel) loanTable.getModel();
-        tableResult.setRowCount(0);
-        String[] renteeComics = renteeData[renteeIndex].getLoanedComics();
-        for (int a=0;a<renteeComics.length;a++){
-            String [] comicDetails = rentalSystem.searchComic(renteeComics[a]);
-            tableResult.addRow(new Object[]{comicDetails[0], comicDetails[1], comicDetails[2], comicDetails[3]});
-        }
-        
-        renteeNum.setText("Rentee " + (renteeIndex+1) + " of " + renteeData.length);
-        
+        displayRentee(renteeData, renteeIndex);
+
+        renteeNum.setText("Rentee " + (renteeIndex + 1) + " of " + renteeData.length);
+
     }//GEN-LAST:event_renteePreviousButtonActionPerformed
 
     /**

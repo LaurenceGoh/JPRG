@@ -557,14 +557,14 @@ public class RentalFrame extends javax.swing.JFrame {
                 systemMessage.setText("Found and displayed item with the ISBN-13 : " + userInput);
                 if (results.length == 6) {
                     if (results[4].equals("JP")) {
-                        additionalResult.setText("This is a manga in Japanese.");
+                        additionalResult.setText("This is a Manga in Japanese.");
                     } else {
-                        additionalResult.setText("This is a manga translated to English.");
+                        additionalResult.setText("This is a Manga translated to English.");
                     }
                     comicIndex = Integer.parseInt(results[5]);
                     comicNum.setText("Comic " + (comicIndex+1) + " of " + comicArrayData.length);
                 } else {
-                    additionalResult.setText("This is a comic in english");
+                    additionalResult.setText("This is a Comic in English.");
                     comicIndex = Integer.parseInt(results[4]);
                     comicNum.setText("Comic " + (comicIndex+1) + " of " + comicArrayData.length);
                 }
